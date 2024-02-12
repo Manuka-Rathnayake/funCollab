@@ -1,34 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import WelcomeScreen from "./screens/WelcomeScreen";
-import ProjectScreen from './screens/ProjectScreen';
-import Tasks from './Components/ProjectScreen Components/tasks';
-import { useFonts } from "expo-font";
-import { SafeAreaView } from "react-native";
+import { AppRegistry, StyleSheet, Text, View } from 'react-native';
+import React,{useState} from 'react';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 export default function App() {
-  const [fontsLoaded, error] = useFonts({
-    "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
-    "Poppins-SemiBold": require("./assets/fonts/Poppins-SemiBold.ttf"),
-  });
 
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+  const [value,setValue] = useState(0);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <WelcomeScreen/>
-      {/*<ProjectScreen />*/} 
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text>Project Progress</Text>
+      <CircularProgress 
+        radius={90} 
+        value={85} 
+        textColor='#222' 
+        fontSize = {20} 
+        valueSuffix={'%'} 
+        inActiveStrokeColor='#2ecc71' 
+        inActiveStrokeOpacity={0.2}
+        duration={3000}>
+
+        </CircularProgress>
+    
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
