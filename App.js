@@ -5,7 +5,7 @@ import { Login, Signup, Welcome } from "./screens";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator
