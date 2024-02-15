@@ -16,7 +16,11 @@
     "react": "18.2.0",
     "react-native": "0.73.4",
     "expo-linear-gradient": "~12.7.1",
-    "expo-checkbox": "~2.7.0"
+    "expo-checkbox": "~2.7.0",
+    "firebase": "^10.8.0",
+    "@react-native-firebase/app": "^18.8.0",
+    "@react-native-firebase/auth": "^18.8.0",
+    "@react-native-firebase/firestore": "^18.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
