@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-const Dashboard = () => {
+const Profile = () => {
     return (
         <View
             style={{
@@ -13,4 +13,4 @@ const Dashboard = () => {
         </View>
     );
 };
-export default Dashboard;
+export default Profile;

@@ -1,57 +1,57 @@
-import React, { useState, createContext, useContext, useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Login, Signup, Welcome, Dashboard } from "./screens";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./config/firebase"; // Ensure you have this import for your Firebase auth instance
+import React, { useState, useEffect, createContext } from 'react';
 import { ActivityIndicator, SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/firebase'; // Adjust this path as necessary
+// Screens
+import Login from './screens/Login';
+import Signup from './screens/Signup';
+import Welcome from './screens/Welcome';
+import Home from './screens/Home';
+import Profile from './screens/Profile';
+import Dashboard from './screens/Dashboard';
 
-// Create the AuthenticatedUserContext
-const AuthenticatedUserContext = createContext();
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const AuthenticatedUserContext = createContext();
 
-const AuthenticatedUserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
+function BottomTabs() {
   return (
-    <AuthenticatedUserContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthenticatedUserContext.Provider>
+    <Tab.Navigator
+      initialRouteName='Home'
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'account' : 'account-outline';
+          } else if (route.name === 'Dashboard') {
+            iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
+          }
+          return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name='Home' component={Home} />
+      <Tab.Screen name='Profile' component={Profile} />
+      <Tab.Screen name='Dashboard' component={Dashboard} />
+    </Tab.Navigator>
   );
-};
+}
 
-const AppStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
-    {/* Add more screens that authenticated users should have access to */}
-  </Stack.Navigator>
-);
-
-const AuthStack = () => (
-  <Stack.Navigator initialRouteName='Welcome'>
-    <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
-    <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-    <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-    {/* Add more screens that unauthenticated users should have access to */}
-  </Stack.Navigator>
-);
-
-export default function App() {
-
+function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
+      setUser(user ? user : null);
       setIsLoading(false);
     });
-
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -64,51 +64,24 @@ export default function App() {
   }
 
   return (
-    <AuthenticatedUserProvider>
+    <AuthenticatedUserContext.Provider value={{ user, setUser }}>
       <NavigationContainer>
-        {user ? <AppStack /> : <AuthStack />}
+        <Stack.Navigator>
+          {user ? (
+            <>
+              <Stack.Screen name="HomeTabs" component={BottomTabs} options={{ headerShown: false }} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+            </>
+          )}
+        </Stack.Navigator>
       </NavigationContainer>
-    </AuthenticatedUserProvider>
+    </AuthenticatedUserContext.Provider>
   );
 }
 
-
-
-/*import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { Login, Signup, Welcome } from "./screens";
-
-const Stack = createNativeStackNavigator();
-
-export default function App() {
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName='Welcome'
-      >
-        <Stack.Screen
-          name="Welcome"
-          component={Welcome}
-          options={{
-            headerShown: false
-          }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            headerShown: false
-          }}
-        />
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          options={{
-            headerShown: false
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}*/
+export default App;
