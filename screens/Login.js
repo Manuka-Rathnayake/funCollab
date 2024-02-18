@@ -12,11 +12,12 @@ import { auth } from "../config/firebase";
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    const [email, setEmail] = useState("");
+    //const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [emailOrUsername, setEmailOrUsername] = useState("");
 
 
-    const onHandleLogin = () => {
+    /*const onHandleLogin = () => {
         if (email !== "" && password !== "") {
             signInWithEmailAndPassword(auth, email, password)
                 .then(() => {
@@ -24,6 +25,42 @@ const Login = ({ navigation }) => {
                     navigation.navigate('Dashboard');
                 })
                 .catch((err) => Alert.alert("Login error", err.message));
+        }
+    };*/
+
+    const onHandleLogin = async () => {
+        if (emailOrUsername !== "" && password !== "") {
+            const isEmail = emailOrUsername.includes('@');
+
+            if (isEmail) {
+                signInWithEmailAndPassword(auth, emailOrUsername, password)
+                    .then(() => {
+                        console.log("Login success");
+                        navigation.navigate('Dashboard');
+                    })
+                    .catch((err) => Alert.alert("Login error", err.message));
+            } else {
+                const usersRef = collection(database, "users");
+                const q = query(usersRef, where("username", "==", emailOrUsername));
+
+                getDocs(q).then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        const userDoc = querySnapshot.docs[0];
+                        const userEmail = userDoc.data().email;
+
+                        signInWithEmailAndPassword(auth, userEmail, password)
+                            .then(() => {
+                                console.log("Login success");
+                                navigation.navigate('Dashboard');
+                            })
+                            .catch((err) => Alert.alert("Login error", err.message));
+                    } else {
+                        Alert.alert("Login error", "No user found with this username.");
+                    }
+                }).catch((err) => {
+                    Alert.alert("Login error", err.message);
+                });
+            }
         }
     };
 
@@ -74,15 +111,15 @@ const Login = ({ navigation }) => {
                             paddingLeft: 22
                         }}>
                             <TextInput
-                                placeholder='Enter your email address'
+                                placeholder='Enter your email or username'
                                 placeholderTextColor={COLORS.white}
                                 keyboardType='email-address'
                                 style={{
                                     width: "100%",
                                     color: COLORS.white
                                 }}
-                                value={email}
-                                onChangeText={(text) => setEmail(text)}
+                                value={emailOrUsername}
+                                onChangeText={(text) => setEmailOrUsername(text)}
                             />
                         </View>
                     </View>
@@ -158,85 +195,6 @@ const Login = ({ navigation }) => {
                         }}
                         onPress={onHandleLogin}
                     />
-
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                        <Text style={{ fontSize: 14, color: COLORS.white }}>Or Login with</Text>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center'
-                    }}>
-                        <TouchableOpacity
-                            onPress={() => console.log("Pressed")}
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                height: 52,
-                                borderWidth: 1,
-                                borderColor: COLORS.grey,
-                                marginRight: 4,
-                                borderRadius: 10
-                            }}
-                        >
-                            <Image
-                                source={require("../assets/facebook.png")}
-                                style={{
-                                    height: 36,
-                                    width: 36,
-                                    marginRight: 8,
-                                }}
-                                resizeMode='contain'
-                            />
-
-                            <Text style={{ color: COLORS.white }}>Facebook</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => console.log("Pressed")}
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                height: 52,
-                                borderWidth: 1,
-                                borderColor: COLORS.grey,
-                                marginRight: 4,
-                                borderRadius: 10
-                            }}
-                        >
-                            <Image
-                                source={require("../assets/google.png")}
-                                style={{
-                                    height: 30,
-                                    width: 30,
-                                    marginRight: 8
-                                }}
-                                resizeMode='contain'
-                            />
-
-                            <Text Text style={{ color: COLORS.white }}>Google</Text>
-                        </TouchableOpacity>
-                    </View>
 
                     <View style={{
                         flexDirection: "row",
