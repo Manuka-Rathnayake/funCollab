@@ -17,6 +17,7 @@ const Signup = ({ navigation }) => {
     const [isChecked, setIsChecked] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [uname, setUname] = useState("");
 
     const onHandleSignup = async () => {
         try {
@@ -26,6 +27,7 @@ const Signup = ({ navigation }) => {
             await setDoc(userRef, {
                 email: email,
                 uid: user.uid,
+                username: uname,
             });
         } catch (error) {
             console.log(error);
@@ -58,7 +60,35 @@ const Signup = ({ navigation }) => {
                             textAlign: 'center'
                         }}>Connect with your friends today!</Text>
                     </View>
+                    <View style={{ marginBottom: 12 }}>
+                        <Text style={{
+                            fontSize: 16,
+                            fontWeight: 400,
+                            marginVertical: 8,
+                            color: COLORS.white
+                        }}>Username</Text>
 
+                        <View style={{
+                            width: "100%",
+                            height: 48,
+                            borderColor: COLORS.white,
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingLeft: 22
+                        }}>
+                            <TextInput
+                                placeholder='Enter a username'
+                                placeholderTextColor={COLORS.white}
+                                style={{
+                                    width: "100%"
+                                }}
+                                value={uname}
+                                onChangeText={(text) => setUname(text)}
+                            />
+                        </View>
+                    </View>
                     <View style={{ marginBottom: 12 }}>
                         <Text style={{
                             fontSize: 16,
@@ -162,87 +192,6 @@ const Signup = ({ navigation }) => {
                         }}
                         onPress={onHandleSignup}
                     />
-
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                        <Text style={{ fontSize: 14, color: COLORS.white, width: '5%' }}>Or</Text>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center'
-                    }}>
-                        <TouchableOpacity
-                            onPress={() => console.log("Pressed")}
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                height: 52,
-                                borderWidth: 1,
-                                borderColor: COLORS.grey,
-                                marginRight: 4,
-                                borderRadius: 10
-                            }}
-                        >
-                            <Image
-                                source={require("../assets/facebook.png")}
-                                style={{
-                                    height: 36,
-                                    width: 36,
-                                    marginRight: 8,
-
-                                }}
-                                resizeMode='contain'
-                            />
-
-                            <Text style={{ color: COLORS.white, width: '40%' }}>Facebook</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => console.log("Pressed")}
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                height: 52,
-                                borderWidth: 1,
-                                borderColor: COLORS.grey,
-                                marginRight: 4,
-                                borderRadius: 10
-                            }}
-                        >
-                            <Image
-                                source={require("../assets/google.png")}
-                                style={{
-                                    height: 36,
-                                    width: 36,
-                                    marginRight: 8
-                                }}
-                                resizeMode='contain'
-                            />
-
-                            <Text style={{ color: COLORS.white, width: '30%' }}>Google</Text>
-                        </TouchableOpacity>
-                    </View>
-
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "center",

@@ -8,11 +8,11 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase'; // Adjust this path as necessary
 // Screens
 import Login from './screens/Login';
-import Signup from './screens/Signup';
+import Signup from './screens/SignUp';
 import Welcome from './screens/Welcome';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
-import Dashboard from './screens/Dashboard';
+import Dashboard from './screens/dashboard';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
