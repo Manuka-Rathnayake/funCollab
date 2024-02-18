@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View} from 'react-native';
 
 const Dashboard = () => {
     return (
@@ -13,4 +13,5 @@ const Dashboard = () => {
         </View>
     );
 };
+
 export default Dashboard;
