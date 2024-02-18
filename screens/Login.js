@@ -7,7 +7,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import Checkbox from "expo-checkbox"
 import Button from '../components/Button';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, database } from "../config/firebase";
+import { Alert } from 'react-native';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);

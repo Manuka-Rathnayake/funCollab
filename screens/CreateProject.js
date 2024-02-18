@@ -1,43 +1,40 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { auth, database } from "../config/firebase";
-import ProjectFormHeader from '../components/ProjectFormHeader';
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
 
 const CreateProjectForm = ({ navigation }) => {
     const [projectName, setProjectName] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [invitedMembers, setInvitedMembers] = useState([]);
 
-    const searchUsersByEmail = async () => {
+    const searchUsersByUsername = async () => {
+        if (!username.trim()) return;
         try {
             const usersRef = collection(database, 'users');
-            const q = query(usersRef, where('email', '==', email));
+            const q = query(usersRef, where('username', '==', username.trim()));
             const querySnapshot = await getDocs(q);
 
-            let users = [];
-            querySnapshot.forEach((doc) => {
-                users.push({ uid: doc.id, ...doc.data() }); // Ensure we capture the UID correctly
-                console.log("User found:", doc.data());
-            });
+            const users = querySnapshot.docs.map(doc => ({
+                uid: doc.id,
+                ...doc.data()
+            }));
+
             setSearchResults(users);
         } catch (error) {
-            console.error("Error searching users by email:", error);
+            console.error("Error searching users by username:", error);
         }
     };
 
     const handleSelectUser = (user) => {
-        console.log('handleSelectUser called with user:', user); // Check if function is called
         if (!invitedMembers.some(member => member.uid === user.uid)) {
             const updatedMembers = [...invitedMembers, user];
             setInvitedMembers(updatedMembers);
-            console.log('Updated Members:', updatedMembers);
         }
     };
-
 
     const handleSubmit = async () => {
         const currentUser = auth.currentUser;
@@ -48,9 +45,7 @@ const CreateProjectForm = ({ navigation }) => {
 
         try {
             const projectRef = doc(database, 'projects', `${currentUser.uid}_${new Date().getTime()}`);
-            const memberUids = invitedMembers.map(user => user.uid); // Use UIDs from invitedMembers
-            console.log('Member UIDs being submitted:', memberUids);
-
+            const memberUids = invitedMembers.map(user => user.uid);
 
             await setDoc(projectRef, {
                 projectName,
@@ -60,16 +55,6 @@ const CreateProjectForm = ({ navigation }) => {
                 members: memberUids,
             });
 
-            console.log('Project created with ID:', projectRef.id);
-
-            // Loop through each invited member and update their projects array
-            invitedMembers.forEach(async (member) => {
-                const userRef = doc(database, 'users', member.uid);
-                await updateDoc(userRef, {
-                    projects: arrayUnion(projectRef.id)
-                });
-            });
-
             navigation.navigate('Dashboard');
         } catch (error) {
             console.error("Error creating project: ", error);
@@ -77,31 +62,82 @@ const CreateProjectForm = ({ navigation }) => {
     };
 
     return (
-        <FlatList
-            data={searchResults}
-            keyExtractor={item => item.uid}
-            renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectUser(item)}>
-                    <Text>{item.email}</Text>
+        <ScrollView style={styles.container}>
+            <Text style={styles.headerText}>Create your project</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Project name"
+                value={projectName}
+                onChangeText={setProjectName}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Start date"
+                value={startDate}
+                onChangeText={setStartDate}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="End date"
+                value={endDate}
+                onChangeText={setEndDate}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Invite friends by username"
+                value={username}
+                onChangeText={setUsername}
+            />
+            <TouchableOpacity style={styles.button} onPress={searchUsersByUsername}>
+                <Text style={styles.buttonText}>Search Users</Text>
+            </TouchableOpacity>
+            {searchResults.map((item) => (
+                <TouchableOpacity key={item.uid} style={styles.userItem} onPress={() => handleSelectUser(item)}>
+                    <Text style={styles.userItemText}>{item.username}</Text>
                 </TouchableOpacity>
-            )}
-            ListHeaderComponent={
-                <ProjectFormHeader
-                    projectName={projectName}
-                    setProjectName={setProjectName}
-                    email={email}
-                    setEmail={setEmail}
-                    searchUsersByEmail={searchUsersByEmail}
-                    startDate={startDate}
-                    setStartDate={setStartDate}
-                    endDate={endDate}
-                    setEndDate={setEndDate}
-                    handleSubmit={handleSubmit}
-                />
-            }
-        />
+            ))}
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+        </ScrollView>
     );
 };
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    headerText: {
+        fontSize: 24,
+        marginBottom: 20,
+    },
+    input: {
+        backgroundColor: '#fff',
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    userItem: {
+        backgroundColor: '#f9f9f9',
+        padding: 10,
+        marginBottom: 5,
+        borderRadius: 5,
+    },
+    userItemText: {
+        fontSize: 16,
+    },
+});
 
 export default CreateProjectForm;

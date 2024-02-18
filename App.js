@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase'; // Adjust this path as necessary
 // Screens
 import Login from './screens/Login';
-import Signup from './screens/SignUp';
+import Signup from './screens/Signup';
 import Welcome from './screens/Welcome';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
