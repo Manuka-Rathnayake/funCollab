@@ -13,6 +13,7 @@ import Welcome from './screens/Welcome';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Dashboard from './screens/dashboard';
+import CreateProjectForm from './screens/CreateProject';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,24 +22,25 @@ const AuthenticatedUserContext = createContext();
 function BottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName='Home'
+      initialRouteName='Dashboard'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
+          if (route.name === 'Dashboard') {
+            iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'account' : 'account-outline';
-          } else if (route.name === 'Dashboard') {
-            iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
+          } else if (route.name === 'CreateProjectForm') {
+            iconName = focused? 'plus-circle': 'plus-circle-outline';
           }
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
       })}
     >
-      <Tab.Screen name='Home' component={Home} />
-      <Tab.Screen name='Profile' component={Profile} />
       <Tab.Screen name='Dashboard' component={Dashboard} />
+      <Tab.Screen name='Profile' component={Profile} />
+      <Tab.Screen name='Create Project' component={CreateProjectForm} />
+      
     </Tab.Navigator>
   );
 }
