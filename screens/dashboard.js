@@ -1,98 +1,75 @@
-
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // You should have the expo vector icons installed
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Make sure you have @react-navigation/native installed
+import { auth, database } from "../config/firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const Dashboard = () => {
-  // Render project placeholders
-  const renderProjectPlaceholders = () => {
-    const placeholders = [];
-    for (let i = 0; i < 10; i++) {
-      placeholders.push(
-        <TouchableOpacity key={i} style={styles.projectPlaceholder}>
-          {/* Project content goes here */}
-        </TouchableOpacity>
-      );
-    }
-    return placeholders;
-  };
+    const [userProjects, setUserProjects] = useState([]);
+    const navigation = useNavigation(); // Use the useNavigation hook to get the navigation prop
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Ionicons name="md-menu" size={24} color="white" />
-        <Text style={styles.headerText}>Dashboard</Text>
-        <Ionicons name="md-grid" size={24} color="white" />
-      </View>
-      <Text style={styles.welcomeText}>Welcome User!</Text>
-      <TouchableOpacity style={styles.searchButton}>
-        <Ionicons name="md-search" size={24} color="white" />
-      </TouchableOpacity>
-      <Text style={styles.projectsHeader}>Your Projects</Text>
-      <ScrollView contentContainerStyle={styles.projectsGrid}>
-        {renderProjectPlaceholders()}
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="md-add" size={24} color="white" />
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
-  );
+    useEffect(() => {
+        const fetchProjects = async () => {
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                console.error("No user is currently logged in.");
+                return;
+            }
+
+            // Fetch projects where the user is the owner or a member
+            try {
+                const projectsRef = collection(database, 'projects');
+                const ownedProjectsQuery = query(projectsRef, where('ownerId', '==', currentUser.uid));
+                const memberProjectsQuery = query(projectsRef, where('members', 'array-contains', currentUser.uid));
+
+                // Fetch owned projects
+                const ownedProjectsSnapshot = await getDocs(ownedProjectsQuery);
+                const ownedProjects = ownedProjectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Fetch projects where the user is a member
+                const memberProjectsSnapshot = await getDocs(memberProjectsQuery);
+                const memberProjects = memberProjectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Combine both owned and member projects
+                setUserProjects([...ownedProjects, ...memberProjects]);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
+    const handleProjectPress = (projectId) => {
+        // Navigate to the ProjectScreen with the projectId
+        navigation.navigate('ProjectScreen', { projectId });
+    };
+
+    return (
+        <FlatList
+            data={userProjects}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleProjectPress(item.id)}>
+                    <View style={styles.projectItem}>
+                        <Text style={styles.projectName}>{item.projectName}</Text>
+                    </View>
+                </TouchableOpacity>
+            )}
+        />
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#7f7fff',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#5f5fc4',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  welcomeText: {
-    color: 'white',
-    fontSize: 18,
-    margin: 16,
-  },
-  searchButton: {
-    position: 'absolute',
-    right: 16,
-    top: 16,
-  },
-  projectsHeader: {
-    fontSize: 16,
-    color: 'white',
-    marginLeft: 16,
-    marginTop: 16,
-  },
-  projectsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: 16,
-  },
-  addButton: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#5f5fc4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  projectPlaceholder: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#8f8fc4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
+    projectItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    projectName: {
+        fontSize: 18,
+    },
+    // Add more styles as needed
 });
 
 export default Dashboard;
