@@ -14,6 +14,7 @@ import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Dashboard from './screens/dashboard';
 import CreateProjectForm from './screens/CreateProject';
+import ProjectScreen from './screens/ProjectScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,6 +73,7 @@ function App() {
           {user ? (
             <>
               <Stack.Screen name="HomeTabs" component={BottomTabs} options={{ headerShown: false }} />
+              <Stack.Screen name="ProjectScreen" component={ProjectScreen} options={{ headerShown: true }}/>
             </>
           ) : (
             <>
