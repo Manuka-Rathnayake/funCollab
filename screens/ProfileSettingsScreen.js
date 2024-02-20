@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { auth, database } from "../config/firebase";
-import { collection, query, where, getDocs,onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 const ProfileSettingsScreen = ({ navigation }) => {
     const [userName, setUserName] = useState('');
-    const [profileImage, setProfileImage] = useState(require('../assets/profilepicture.jpg')); // Adjust with your path
+    const [profileImage, setProfileImage] = useState(require('../assets/profilepicture.jpg'));
     const [completedTasks, setCompletedTasks] = useState(0);
     const [ongoingTasks, setOngoingTasks] = useState(0);
 
     useEffect(() => {
         const user = auth.currentUser;
+        console.log("current user",user);
         if (user) {
             setUserName(user.displayName || 'Anonymous User');
-            setProfileImage(user.photoURL ? { uri: user.photoURL } : require('../assets/profilepicture.jpg')); // Use a default image if no photoURL
+            setProfileImage(user.photoURL ? { uri: user.photoURL } : require('../assets/profilepicture.jpg'));
 
-            // Fetch projects where the user is a member
             const projectsRef = collection(database, 'projects');
             const q = query(projectsRef, where('members', 'array-contains', user.uid));
 
@@ -25,60 +25,23 @@ const ProfileSettingsScreen = ({ navigation }) => {
 
                 querySnapshot.forEach((doc) => {
                     const project = doc.data();
-                    project.tasks.forEach((task) => {
-                        if (task.assignedTo === user.uid) {
-                            if (task.isCompleted) {
-                                _completedTasks++;
-                            } else {
-                                _ongoingTasks++;
+                    // Ensure tasks exist and is an array before iterating
+                    if (Array.isArray(project.tasks)) {
+                        project.tasks.forEach((task) => {
+                            if (task.assignedTo === user.uid) {
+                                task.isCompleted ? _completedTasks++ : _ongoingTasks++;
                             }
-                        }
-                    });
+                        });
+                    }
                 });
 
                 setCompletedTasks(_completedTasks);
                 setOngoingTasks(_ongoingTasks);
             });
 
-            return () => unsubscribe(); // Detach the listener when the component unmounts
+            return () => unsubscribe();
         }
     }, []);
-
-
-   /* useEffect(() => {
-        const fetchUserData = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                setUserName(user.displayName || 'Anonymous User');
-                setProfileImage(user.photoURL ? { uri: user.photoURL } : require('../assets/profilepicture.jpg')); // Use a default image if no photoURL
-
-                // Fetch projects where the user is a member
-                const projectsRef = collection(database, 'projects');
-                const q = query(projectsRef, where('members', 'array-contains', user.uid));
-                const querySnapshot = await getDocs(q);
-                let _completedTasks = 0;
-                let _ongoingTasks = 0;
-
-                querySnapshot.forEach((doc) => {
-                    const project = doc.data();
-                    project.tasks.forEach((task) => {
-                        if (task.assignedTo === user.uid) {
-                            if (task.isCompleted) {
-                                _completedTasks++;
-                            } else {
-                                _ongoingTasks++;
-                            }
-                        }
-                    });
-                });
-
-                setCompletedTasks(_completedTasks);
-                setOngoingTasks(_ongoingTasks);
-            }
-        };
-
-        fetchUserData();
-    }, []);*/
 
     const handleLogout = () => {
         auth.signOut().then(() => navigation.replace('Welcome'));
@@ -106,6 +69,7 @@ const ProfileSettingsScreen = ({ navigation }) => {
         </View>
     );
 };
+
 
 // Add the rest of your styles here, including the logoutButton style
 const styles = StyleSheet.create({
