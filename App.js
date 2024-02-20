@@ -15,6 +15,7 @@ import Profile from './screens/Profile';
 import Dashboard from './screens/dashboard';
 import CreateProjectForm from './screens/CreateProject';
 import ProjectScreen from './screens/ProjectScreen';
+import ProfileSettingsScreen from './screens/ProfileSettingsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,7 +30,7 @@ function BottomTabs() {
           let iconName;
           if (route.name === 'Dashboard') {
             iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileSettingsScreen') {
             iconName = focused ? 'account' : 'account-outline';
           } else if (route.name === 'CreateProjectForm') {
             iconName = focused? 'plus-circle': 'plus-circle-outline';
@@ -39,7 +40,7 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name='Dashboard' component={Dashboard} />
-      <Tab.Screen name='Profile' component={Profile} />
+      <Tab.Screen name='ProfileSettingsScreen' component={ProfileSettingsScreen} />
       <Tab.Screen name='Create Project' component={CreateProjectForm} />
       
     </Tab.Navigator>
