@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { auth, database } from "../config/firebase";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateProjectForm = ({ navigation }) => {
     const [projectName, setProjectName] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
     const [username, setUsername] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [invitedMembers, setInvitedMembers] = useState([]);
+    const [eventDate, setEventDate] = useState(new Date()); 
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [submittedMembers, setSubmittedMembers] = useState([]);
 
     const searchUsersByUsername = async () => {
         if (!username.trim()) return;
@@ -33,6 +35,8 @@ const CreateProjectForm = ({ navigation }) => {
         if (!invitedMembers.some(member => member.uid === user.uid)) {
             const updatedMembers = [...invitedMembers, user];
             setInvitedMembers(updatedMembers);
+            setUsername('');
+            setSearchResults([]);
         }
     };
 
@@ -49,39 +53,55 @@ const CreateProjectForm = ({ navigation }) => {
 
             await setDoc(projectRef, {
                 projectName,
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
+                eventDate: new Date(eventDate),
                 ownerId: currentUser.uid,
                 members: memberUids,
             });
+            setProjectName('');
+            setEventDate(new Date());
+            setUsername('');
+            setSearchResults([]);
+            setInvitedMembers([]);
 
             navigation.navigate('Dashboard');
         } catch (error) {
             console.error("Error creating project: ", error);
         }
     };
+    const showDatepicker = () => {
+        setShowDatePicker((current) => !current);
+    };
+
+    const onDateChange = (event, selectedDate) => {
+        setShowDatePicker(false);
+        const currentDate = selectedDate || eventDate;
+        setEventDate(currentDate);
+    };
+
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.headerText}>Create your project</Text>
+            <Text style={styles.headerText}>Create your Event</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Project name"
+                placeholder="Event name"
                 value={projectName}
                 onChangeText={setProjectName}
             />
-            <TextInput
-                style={styles.input}
-                placeholder="Start date"
-                value={startDate}
-                onChangeText={setStartDate}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="End date"
-                value={endDate}
-                onChangeText={setEndDate}
-            />
+            <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
+                <Text>Select Event Date</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={eventDate}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={onDateChange}
+                    style={styles.datePicker}
+                />
+            )}
             <TextInput
                 style={styles.input}
                 placeholder="Invite friends by username"
@@ -99,6 +119,12 @@ const CreateProjectForm = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
+            <Text style={styles.addedmembers}>Added Members:</Text>
+            {invitedMembers.map((member, index) => (
+                <View key={index} style={styles.memberItem}>
+                    <Text style={styles.memberName}>{member.username}</Text>
+                </View>
+            ))}
         </ScrollView>
     );
 };
@@ -111,6 +137,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 24,
         marginBottom: 20,
+        textAlign: 'center',
     },
     input: {
         backgroundColor: '#fff',
@@ -137,6 +164,44 @@ const styles = StyleSheet.create({
     },
     userItemText: {
         fontSize: 16,
+    },
+    datePickerButton: {
+        padding: 10,
+        backgroundColor: 'white', 
+        borderRadius: 5,
+        marginVertical: 10,
+    },
+    buttonText: {
+        color: '#ffffff',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    dateDisplay: {
+        fontSize: 16,
+        padding: 10,
+        backgroundColor: '#f0f0f0', 
+        borderRadius: 5,
+        marginTop: 5,
+        color: '#333',
+        textAlign: 'center',
+    },
+    memberItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        marginTop: 5,
+        backgroundColor: '#f0f0f0', 
+        borderRadius: 5,
+    },
+    memberName: {
+        fontSize: 16,
+        color: '#333', 
+        textAlign: 'center',
+    },
+    addedmembers: {
+        fontSize: 16,
+        marginTop: 10,
+        textAlign: 'center',
     },
 });
 
