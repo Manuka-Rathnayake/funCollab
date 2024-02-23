@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { auth, database } from "../config/firebase";
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot,doc,getDoc } from 'firebase/firestore';
 
 const ProfileSettingsScreen = ({ navigation }) => {
     const [userName, setUserName] = useState('');
@@ -13,7 +13,18 @@ const ProfileSettingsScreen = ({ navigation }) => {
         const user = auth.currentUser;
         console.log("current user",user);
         if (user) {
-            setUserName(user.displayName || 'Anonymous User');
+            const userDocRef = doc(database, 'users', user.uid);
+            getDoc(userDocRef).then((docSnap) => {
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    setUserName(userData.username || 'Anonymous User');
+                } else {
+                    setUserName('Anonymous User');
+                }
+            }).catch((error) => {
+                console.error("Error fetching user document:", error);
+                setUserName('Anonymous User');
+            });
             setProfileImage(user.photoURL ? { uri: user.photoURL } : require('../assets/profilepicture.jpg'));
 
             const projectsRef = collection(database, 'projects');
