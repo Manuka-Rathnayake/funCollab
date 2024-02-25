@@ -82,7 +82,8 @@ const Signup = ({ navigation }) => {
                                 placeholder='Enter a username'
                                 placeholderTextColor={COLORS.white}
                                 style={{
-                                    width: "100%"
+                                    width: "100%",
+                                    color: COLORS.white
                                 }}
                                 value={uname}
                                 onChangeText={(text) => setUname(text)}
@@ -112,7 +113,8 @@ const Signup = ({ navigation }) => {
                                 placeholderTextColor={COLORS.white}
                                 keyboardType='email-address'
                                 style={{
-                                    width: "100%"
+                                    width: "100%",
+                                    color: COLORS.white
                                 }}
                                 value={email}
                                 onChangeText={(text) => setEmail(text)}
@@ -143,7 +145,8 @@ const Signup = ({ navigation }) => {
                                 placeholderTextColor={COLORS.white}
                                 secureTextEntry={isPasswordShown}
                                 style={{
-                                    width: "100%"
+                                    width: "100%",
+                                    color: COLORS.white
                                 }}
                                 value={password}
                                 onChangeText={(text) => setPassword(text)}
@@ -166,20 +169,6 @@ const Signup = ({ navigation }) => {
 
                             </TouchableOpacity>
                         </View>
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        marginVertical: 6
-                    }}>
-                        <Checkbox
-                            style={{ marginRight: 8 }}
-                            value={isChecked}
-                            onValueChange={setIsChecked}
-                            color={isChecked ? COLORS.white : undefined}
-                        />
-
-                        <Text style={{ color: COLORS.white, width: '100%' }}>I agree to the terms and conditions</Text>
                     </View>
 
                     <Button

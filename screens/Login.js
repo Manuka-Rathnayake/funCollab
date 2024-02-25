@@ -14,21 +14,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    //const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [emailOrUsername, setEmailOrUsername] = useState("");
-
-
-    /*const onHandleLogin = () => {
-        if (email !== "" && password !== "") {
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    console.log("Login success");
-                    navigation.navigate('Dashboard');
-                })
-                .catch((err) => Alert.alert("Login error", err.message));
-        }
-    };*/
 
     const onHandleLogin = async () => {
         if (emailOrUsername !== "" && password !== "") {
@@ -149,7 +136,8 @@ const Login = ({ navigation }) => {
                                 placeholderTextColor={COLORS.white}
                                 secureTextEntry={isPasswordShown}
                                 style={{
-                                    width: "100%"
+                                    width: "100%",
+                                    color: COLORS.white
                                 }}
                                 value={password}
                                 onChangeText={(text) => setPassword(text)}
@@ -172,20 +160,6 @@ const Login = ({ navigation }) => {
 
                             </TouchableOpacity>
                         </View>
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        marginVertical: 6
-                    }}>
-                        <Checkbox
-                            style={{ marginRight: 8 }}
-                            value={isChecked}
-                            onValueChange={setIsChecked}
-                            color={isChecked ? COLORS.purple : undefined}
-                        />
-
-                        <Text Text style={{ color: COLORS.white }}>Remenber Me</Text>
                     </View>
 
                     <Button
