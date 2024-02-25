@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { auth, database } from "../config/firebase";
 import { collection, query, where, onSnapshot,doc,getDoc } from 'firebase/firestore';
-
+import { LinearGradient } from "expo-linear-gradient";
+import COLORS from '../constants/colors';
 const ProfileSettingsScreen = ({ navigation }) => {
     const [userName, setUserName] = useState('');
     const [profileImage, setProfileImage] = useState(require('../assets/profilepicture.jpg'));
@@ -59,6 +60,12 @@ const ProfileSettingsScreen = ({ navigation }) => {
     };
 
     return (
+        <LinearGradient
+        style={{
+            flex: 1
+        }}
+        colors={[COLORS.purple, COLORS.blue]}
+    >
         <View style={styles.container}>
             <View style={styles.profileHeader}>
                 <Image source={profileImage} style={styles.profileImage} />
@@ -78,6 +85,7 @@ const ProfileSettingsScreen = ({ navigation }) => {
                 <Text style={styles.logoutButtonText}>Log Out</Text>
             </TouchableOpacity>
         </View>
+        </LinearGradient>
     );
 };
 
@@ -87,12 +95,12 @@ const styles = StyleSheet.create({
     // your existing styles
     logoutButton: {
         marginTop: 20,
-        backgroundColor: '#007bff',
+        backgroundColor: 'white',
         padding: 10,
         borderRadius: 5,
     },
     logoutButtonText: {
-        color: '#ffffff',
+        color: COLORS.purple,
     },
     container: {
         flex: 1,
@@ -113,6 +121,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginTop: 10,
+        color:'white'
     },
     editButton: {
         marginTop: 10,
@@ -134,9 +143,11 @@ const styles = StyleSheet.create({
     statNumber: {
         fontSize: 20,
         fontWeight: 'bold',
+        color:'white'
     },
     statLabel: {
         fontSize: 16,
+        color:'white'
     },
 });
 

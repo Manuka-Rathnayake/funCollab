@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from 
 import { auth, database } from "../config/firebase";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import COLORS from '../constants/colors';
+import { LinearGradient } from "expo-linear-gradient";
 
 const CreateProjectForm = ({ navigation }) => {
     const [projectName, setProjectName] = useState('');
@@ -80,6 +82,12 @@ const CreateProjectForm = ({ navigation }) => {
 
 
     return (
+        <LinearGradient
+        style={{
+            flex: 1
+        }}
+        colors={[COLORS.purple, COLORS.blue]}
+    >
         <ScrollView style={styles.container}>
             <Text style={styles.headerText}>Create your Event</Text>
             <TextInput
@@ -89,7 +97,7 @@ const CreateProjectForm = ({ navigation }) => {
                 onChangeText={setProjectName}
             />
             <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
-                <Text>Select Event Date</Text>
+                <Text style={{color:COLORS.purple}}>Select Event Date</Text>
             </TouchableOpacity>
             {showDatePicker && (
                 <DateTimePicker
@@ -126,6 +134,7 @@ const CreateProjectForm = ({ navigation }) => {
                 </View>
             ))}
         </ScrollView>
+        </LinearGradient>
     );
 };
 
@@ -133,28 +142,26 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        top: 20
     },
     headerText: {
         fontSize: 24,
         marginBottom: 20,
         textAlign: 'center',
+        color:'white'
     },
     input: {
         backgroundColor: '#fff',
         padding: 10,
         marginBottom: 10,
-        borderRadius: 5,
+        borderRadius:30
     },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor:COLORS.purple,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
         marginBottom: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
     },
     userItem: {
         backgroundColor: '#f9f9f9',
@@ -168,11 +175,11 @@ const styles = StyleSheet.create({
     datePickerButton: {
         padding: 10,
         backgroundColor: 'white', 
-        borderRadius: 5,
-        marginVertical: 10,
+        borderRadius:30,
+        marginBottom:10
     },
     buttonText: {
-        color: '#ffffff',
+        color: 'white',
         textAlign: 'center',
         fontSize: 16,
     },
@@ -202,6 +209,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginTop: 10,
         textAlign: 'center',
+        color:'white'
     },
 });
 

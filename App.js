@@ -5,17 +5,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { onAuthStateChanged } from 'firebase/auth';
+import * as Animatable from 'react-native-animatable';
 import { auth } from './config/firebase'; // Adjust this path as necessary
 // Screens
 import Login from './screens/Login';
 import Signup from './screens/Signup';
 import Welcome from './screens/Welcome';
-import Home from './screens/Home';
-import Profile from './screens/Profile';
 import Dashboard from './screens/dashboard';
 import CreateProjectForm from './screens/CreateProject';
 import ProjectScreen from './screens/ProjectScreen';
 import ProfileSettingsScreen from './screens/ProfileSettingsScreen';
+import COLORS from './constants/colors';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,18 +30,36 @@ function BottomTabs() {
           let iconName;
           if (route.name === 'Dashboard') {
             iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
+            color= focused? COLORS.purple:'grey'
           } else if (route.name === 'ProfileSettingsScreen') {
             iconName = focused ? 'account' : 'account-outline';
+            color= focused? COLORS.purple:'grey'
           } else if (route.name === 'CreateProjectForm') {
-            iconName = focused? 'plus-circle': 'plus-circle-outline';
+            color= focused? COLORS.purple:'grey'
+            iconName = focused ? "plus-circle": "plus-circle-outline";
           }
-          return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+          
+          return <MaterialCommunityIcons name={iconName} size={30} color={color} />;
         },
+        tabBarStyle:{
+            borderRadius:27,
+            position:'absolute',
+            bottom: 25,
+            left:15,
+            right:15
+        },
+        tabBarLabelStyle:{
+            display:'none'
+        },
+        tabBarIconStyle:{
+          
+        }
       })}
+
     >
-      <Tab.Screen name='Dashboard' component={Dashboard} />
+      <Tab.Screen name='Dashboard' component={Dashboard}  />
       <Tab.Screen name='ProfileSettingsScreen' component={ProfileSettingsScreen} />
-      <Tab.Screen name='Create Project' component={CreateProjectForm} />
+      <Tab.Screen name='CreateProjectForm' component={CreateProjectForm} options={{headerShown:false}}/>
       
     </Tab.Navigator>
   );
