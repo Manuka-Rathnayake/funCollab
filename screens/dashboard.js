@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, database } from "../config/firebase";
 import { collection, query, where, onSnapshot, doc, deleteDoc,getDoc } from 'firebase/firestore';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import COLORS from '../constants/colors';
+import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Dashboard = () => {
     const navigation = useNavigation();
@@ -76,6 +79,12 @@ const Dashboard = () => {
     };
 
     return (
+        <LinearGradient
+        style={{
+            flex: 1
+        }}
+        colors={[COLORS.purple, COLORS.blue]}
+    >
         <View style={{ flex: 1 }}>
             <Text style={styles.welcomeMessage}>Welcome back 👋{'\n'} {userName}!</Text>
             <Text style={styles.header}>Owned Projects</Text>
@@ -107,18 +116,28 @@ const Dashboard = () => {
                 ListEmptyComponent={<Text style={styles.noProjectsText}>No invited projects</Text>}
             />
         </View>
+        </LinearGradient>
     );
 };
 
 
 const styles = StyleSheet.create({
     projectItem: {
-        padding: 10,
+        padding:8,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        backgroundColor:'white',
+        margin:5,
+        borderRadius:30,
+        paddingLeft:15,
+        marginLeft:15,
+        marginRight:15
     },
     projectName: {
         fontSize: 18,
+        paddingLeft:10,
+        fontWeight:'500',
+        color:COLORS.purple
     },
     header: {
         fontSize: 20,
@@ -126,26 +145,33 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 10,
         textAlign: 'center',
+        color:'white'
     },
     deleteButton: {
         padding: 5,
-        backgroundColor: 'red',
-        borderRadius: 5,
+        backgroundColor:COLORS.purple,
+        borderRadius: 30,
         alignSelf: 'flex-end',
-        marginTop: -20, // Adjust based on your layout
+        marginTop: -25 // Adjust based on your layout
     },
     noProjectsText: {
         textAlign: 'center',
         marginTop: 20,
         fontSize: 16,
-        color: 'grey',
+        color: 'white',
     },
     welcomeMessage: {
         fontSize: 24,
         fontWeight: 'bold',
         margin: 10,
         textAlign: 'center',
+        color: 'white'
     },
+    projectstyle:{
+        color:'white',
+        borderRadius:15,
+        margin:10
+    }
 });
 
 export default Dashboard;
