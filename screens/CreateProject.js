@@ -51,7 +51,7 @@ const CreateProjectForm = ({ navigation }) => {
 
         try {
             const projectRef = doc(database, 'projects', `${currentUser.uid}_${new Date().getTime()}`);
-            const memberUids = invitedMembers.map(user => user.uid);
+            const memberUids = [...new Set([...invitedMembers.map(user => user.uid), currentUser.uid])];
 
             await setDoc(projectRef, {
                 projectName,
