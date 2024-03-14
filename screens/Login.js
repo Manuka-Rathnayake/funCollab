@@ -66,7 +66,7 @@ const Login = ({ navigation }) => {
                         marginVertical: 29, justifyContent: 'center', alignItems: 'center'
                     }}>
                         <Text style={{
-                            fontSize: 22,
+                            fontSize: 28,
                             fontWeight: 'bold',
                             marginVertical: 12,
                             color: COLORS.white
@@ -78,7 +78,7 @@ const Login = ({ navigation }) => {
                             fontSize: 16,
                             color: COLORS.white,
                             marginHorizontal: 2,
-                        }}>Hello again you have been missed!</Text>
+                        }}>You have been missed!</Text>
                     </View>
 
                     <View style={{ marginBottom: 12 }}>
@@ -87,7 +87,7 @@ const Login = ({ navigation }) => {
                             fontWeight: 400,
                             marginVertical: 8,
                             color: COLORS.white
-                        }}>Email address</Text>
+                        }}>Email address / Username</Text>
 
                         <View style={{
                             width: "100%",
@@ -134,7 +134,7 @@ const Login = ({ navigation }) => {
                             <TextInput
                                 placeholder='Enter your password'
                                 placeholderTextColor={COLORS.white}
-                                secureTextEntry={isPasswordShown}
+                                secureTextEntry={!isPasswordShown}
                                 style={{
                                     width: "100%",
                                     color: COLORS.white
@@ -151,7 +151,7 @@ const Login = ({ navigation }) => {
                                 }}
                             >
                                 {
-                                    isPasswordShown == true ? (
+                                    isPasswordShown == false ? (
                                         <Ionicons name="eye-off" size={24} color={COLORS.white} />
                                     ) : (
                                         <Ionicons name="eye" size={24} color={COLORS.white} />

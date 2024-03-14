@@ -85,7 +85,8 @@ const ProfileSettingsScreen = ({ navigation }) => {
     return (
         <LinearGradient
         style={{
-            flex: 1
+            flex: 1,
+            paddingBottom: 250,
         }}
         colors={[COLORS.purple, COLORS.blue]}
     >
@@ -136,11 +137,16 @@ const styles = StyleSheet.create({
     logoutButton: {
         marginTop: 20,
         backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 5,
+        //padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 60,
+        borderRadius: 20,
+        alignSelf: 'center',
     },
     logoutButtonText: {
         color: COLORS.purple,
+        fontWeight: 'bold',
+        fontSize: 18,
     },
     container: {
         flex: 1,
@@ -173,12 +179,14 @@ const styles = StyleSheet.create({
         color: '#ffffff',
     },
     statsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+        flexDirection: 'column',
+        justifyContent: 'center',
         width: '100%',
+        alignItems: 'center',
     },
     statBox: {
         alignItems: 'center',
+        marginBottom: 10,
     },
     statNumber: {
         fontSize: 20,

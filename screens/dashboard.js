@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  SafeAreaView
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth, database } from "../config/firebase";
@@ -29,6 +30,9 @@ const Dashboard = () => {
   const [userName, setUserName] = useState("");
   const [ownedProjects, setOwnedProjects] = useState([]);
   const [memberProjects, setMemberProjects] = useState([]);
+  const PROJECT_ITEM_HEIGHT = 75; 
+  const MAX_VISIBLE_ITEMS = 3; 
+  const FLATLIST_HEIGHT = PROJECT_ITEM_HEIGHT * MAX_VISIBLE_ITEMS;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -135,17 +139,20 @@ const Dashboard = () => {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <LinearGradient
       style={{
         flex: 1,
       }}
       colors={[COLORS.purple, COLORS.blue]}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, padding: 10 }}>
         <Text style={styles.welcomeMessage}>
           Welcome back 👋{"\n"} {userName}!
         </Text>
+        <View style={styles.ProjectContainer}>
         <Text style={styles.header}>Owned Projects</Text>
+        <View style={{ height: FLATLIST_HEIGHT }}>
         <FlatList
           data={ownedProjects}
           keyExtractor={(item) => item.id}
@@ -165,9 +172,12 @@ const Dashboard = () => {
           ListEmptyComponent={
             <Text style={styles.noProjectsText}>No owned projects</Text>
           }
+          
         />
+        </View>
 
         <Text style={styles.header}>Member Projects</Text>
+        <View style={{ height: FLATLIST_HEIGHT }}>
         <FlatList
           data={memberProjects}
           keyExtractor={(item) => item.id}
@@ -182,13 +192,23 @@ const Dashboard = () => {
           ListEmptyComponent={
             <Text style={styles.noProjectsText}>No invited projects</Text>
           }
+          
         />
+        </View>
+        </View>
       </View>
     </LinearGradient>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  ProjectContainer: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    marginLeft: 15,
+    marginRight: 15,
+  },
    headerTitleContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -207,12 +227,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   projectItem: {
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    backgroundColor: "white",
+    padding: 10,
+    backgroundColor: COLORS.purple,
     margin: 5,
-    borderRadius: 30,
+    borderRadius: 20,
     paddingLeft: 15,
     marginLeft: 15,
     marginRight: 15,
@@ -221,18 +239,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingLeft: 10,
     fontWeight: "500",
-    color: COLORS.purple,
+    color: 'white',
   },
   header: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 10,
     textAlign: "center",
-    color: "white",
+    color: COLORS.purple,
   },
   deleteButton: {
-    padding: 5,
+    padding: 3,
     backgroundColor: COLORS.purple,
     borderRadius: 30,
     alignSelf: "flex-end",
