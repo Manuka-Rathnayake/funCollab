@@ -39,14 +39,15 @@ function BottomTabs() {
             iconName = focused ? "plus-circle": "plus-circle-outline";
           }
           
-          return <MaterialCommunityIcons name={iconName} size={30} color={color} />;
+          return <MaterialCommunityIcons name={iconName} size={35} color={color} />;
         },
         tabBarStyle:{
-            borderRadius:27,
+            borderRadius:20,
             position:'absolute',
-            bottom: 25,
-            left:15,
-            right:15
+            bottom: 30,
+            marginLeft:25,
+            marginRight:25,
+            height:55,
         },
         tabBarLabelStyle:{
             display:'none'
@@ -58,8 +59,8 @@ function BottomTabs() {
 
     >
       <Tab.Screen name='Dashboard' component={Dashboard}  />
-      <Tab.Screen name='ProfileSettingsScreen' component={ProfileSettingsScreen} />
       <Tab.Screen name='CreateProjectForm' component={CreateProjectForm} />
+      <Tab.Screen name='ProfileSettingsScreen' component={ProfileSettingsScreen} />
       
     </Tab.Navigator>
   );

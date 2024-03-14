@@ -143,7 +143,7 @@ const Signup = ({ navigation }) => {
                             <TextInput
                                 placeholder='Enter your password'
                                 placeholderTextColor={COLORS.white}
-                                secureTextEntry={isPasswordShown}
+                                secureTextEntry={!isPasswordShown}
                                 style={{
                                     width: "100%",
                                     color: COLORS.white
@@ -160,7 +160,7 @@ const Signup = ({ navigation }) => {
                                 }}
                             >
                                 {
-                                    isPasswordShown == true ? (
+                                    isPasswordShown == false ? (
                                         <Ionicons name="eye-off" size={24} color={COLORS.white} />
                                     ) : (
                                         <Ionicons name="eye" size={24} color={COLORS.white} />
