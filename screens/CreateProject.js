@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useLayoutEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { auth, database } from "../config/firebase";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import COLORS from '../constants/colors';
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CreateProjectForm = ({ navigation }) => {
     const [projectName, setProjectName] = useState('');
@@ -14,6 +15,28 @@ const CreateProjectForm = ({ navigation }) => {
     const [eventDate, setEventDate] = useState(new Date()); 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [submittedMembers, setSubmittedMembers] = useState([]);
+
+    useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.headerTitleContainer}>
+          <MaterialCommunityIcons name="plus-circle" size={24} color={COLORS.purple} />
+          <Text style={styles.headerTitleText}>Create a Event</Text>
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: COLORS.purple, // Adjust the color to your header's background
+        elevation: 0, // Removes shadow on Android
+        shadowOpacity: 0, // Removes shadow on iOS
+      },
+      headerTitleAlign: "center",
+      headerTitleContainerStyle: {
+        left: 0, // Adjust these values to bring the title closer to the center if needed
+        right: 0,
+      },
+    });
+  }, [navigation]);
+
 
     const searchUsersByUsername = async () => {
         if (!username.trim()) return;
@@ -139,6 +162,23 @@ const CreateProjectForm = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+      headerTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    backgroundColor: "white", // Adjust if you want a different background for the title
+    borderRadius: 30,
+    marginHorizontal: 10, // Keeps the header title container within the screen bounds
+    alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
+    width: "100%", // Prevents the title from being too wide on large screens
+  },
+  headerTitleText: {
+    marginLeft: 10,
+    color: COLORS.purple, // Adjust the color to match your design
+    fontSize: 18, // Adjust the size to match your design
+    fontWeight: "bold",
+  },
     container: {
         flex: 1,
         padding: 20,
@@ -157,11 +197,12 @@ const styles = StyleSheet.create({
         borderRadius:30
     },
     button: {
-        backgroundColor:COLORS.purple,
+        backgroundColor:COLORS.white,
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 30,
         alignItems: 'center',
         marginBottom: 10,
+        marginTop: 10
     },
     userItem: {
         backgroundColor: '#f9f9f9',
@@ -179,7 +220,7 @@ const styles = StyleSheet.create({
         marginBottom:10
     },
     buttonText: {
-        color: 'white',
+        color: COLORS.purple,
         textAlign: 'center',
         fontSize: 16,
     },
