@@ -1,14 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { auth, database } from "../config/firebase";
 import { collection, query, where, onSnapshot,doc,getDoc } from 'firebase/firestore';
 import { LinearGradient } from "expo-linear-gradient";
 import COLORS from '../constants/colors';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 const ProfileSettingsScreen = ({ navigation }) => {
     const [userName, setUserName] = useState('');
     const [profileImage, setProfileImage] = useState(require('../assets/profilepicture.jpg'));
     const [completedTasks, setCompletedTasks] = useState(0);
     const [ongoingTasks, setOngoingTasks] = useState(0);
+
+    useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.headerTitleContainer}>
+          <MaterialCommunityIcons name="account" size={24} color={COLORS.purple} />
+          <Text style={styles.headerTitleText}>Profile</Text>
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: COLORS.purple, // Adjust the color to your header's background
+        elevation: 0, // Removes shadow on Android
+        shadowOpacity: 0, // Removes shadow on iOS
+      },
+      headerTitleAlign: "center",
+      headerTitleContainerStyle: {
+        left: 0, // Adjust these values to bring the title closer to the center if needed
+        right: 0,
+      },
+    });
+  }, [navigation]);
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -92,6 +115,23 @@ const ProfileSettingsScreen = ({ navigation }) => {
 
 // Add the rest of your styles here, including the logoutButton style
 const styles = StyleSheet.create({
+  headerTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    backgroundColor: "white", // Adjust if you want a different background for the title
+    borderRadius: 30,
+    marginHorizontal: 10, // Keeps the header title container within the screen bounds
+    alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
+    width: "100%", // Prevents the title from being too wide on large screens
+  },
+  headerTitleText: {
+    marginLeft: 10,
+    color: COLORS.purple, // Adjust the color to match your design
+    fontSize: 18, // Adjust the size to match your design
+    fontWeight: "bold",
+  },
     // your existing styles
     logoutButton: {
         marginTop: 20,

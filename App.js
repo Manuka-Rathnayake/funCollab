@@ -59,7 +59,7 @@ function BottomTabs() {
     >
       <Tab.Screen name='Dashboard' component={Dashboard}  />
       <Tab.Screen name='ProfileSettingsScreen' component={ProfileSettingsScreen} />
-      <Tab.Screen name='CreateProjectForm' component={CreateProjectForm} options={{headerShown:false}}/>
+      <Tab.Screen name='CreateProjectForm' component={CreateProjectForm} />
       
     </Tab.Navigator>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -32,6 +32,7 @@ import { Picker } from "@react-native-picker/picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import COLORS from "../constants/colors";
+import { useNavigation } from '@react-navigation/native';
 
 const buildingBW = require("../assets/building-bw.png");
 const buildingColor = require("../assets/building-color.png");
@@ -51,6 +52,32 @@ const ProjectScreen = ({ route }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [newTaskName, setNewTaskName] = useState("");
   const [daysRemaining, setDaysRemaining] = useState(null);
+
+  const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.headerTitleContainer}>
+          <MaterialCommunityIcons name="home" size={24} color={COLORS.purple} />
+          <Text style={styles.headerTitleText}>Event</Text>
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: COLORS.purple, // Adjust the color to your header's background
+        elevation: 0, // Removes shadow on Android
+        shadowOpacity: 0, // Removes shadow on iOS
+      },
+      headerTitleAlign: "center",
+      headerBackVisible: false,
+      headerTitleContainerStyle: {
+        left: 0, // Adjust these values to bring the title closer to the center if needed
+        right: 0,
+      },
+      
+    });
+  }, [navigation]);
+
 
   useEffect(() => {
     if (project && project.eventDate) {
@@ -366,6 +393,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     //backgroundColor: "#fff", // or any color that suits your app theme
+  },
+  headerTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    backgroundColor: "white", // Adjust if you want a different background for the title
+    borderRadius: 30,
+    marginHorizontal: 10, // Keeps the header title container within the screen bounds
+    alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
+    width: "90%", // Prevents the title from being too wide on large screens
+  },
+  headerTitleText: {
+    marginLeft: 10,
+    color: COLORS.purple, // Adjust the color to match your design
+    fontSize: 18, // Adjust the size to match your design
+    fontWeight: "bold",
   },
   buttonsContainer: {
     flexDirection: "row",
