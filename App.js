@@ -44,7 +44,7 @@ function BottomTabs() {
         tabBarStyle:{
             borderRadius:20,
             position:'absolute',
-            bottom: 30,
+            bottom: 13,
             marginLeft:25,
             marginRight:25,
             height:55,
@@ -54,7 +54,8 @@ function BottomTabs() {
         },
         tabBarIconStyle:{
           
-        }
+        },
+        tabBarHideOnKeyboard: true,
       })}
 
     >

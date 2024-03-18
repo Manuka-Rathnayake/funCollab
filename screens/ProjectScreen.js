@@ -53,6 +53,10 @@ const ProjectScreen = ({ route }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [daysRemaining, setDaysRemaining] = useState(null);
 
+  const PROJECT_ITEM_HEIGHT = 80; 
+  const MAX_VISIBLE_ITEMS = 3; 
+  const FLATLIST_HEIGHT = PROJECT_ITEM_HEIGHT * MAX_VISIBLE_ITEMS;
+
   const navigation = useNavigation();
 
     useLayoutEffect(() => {
@@ -65,8 +69,6 @@ const ProjectScreen = ({ route }) => {
       ),
       headerStyle: {
         backgroundColor: COLORS.purple, // Adjust the color to your header's background
-        elevation: 0, // Removes shadow on Android
-        shadowOpacity: 0, // Removes shadow on iOS
       },
       headerTitleAlign: "center",
       headerBackVisible: false,
@@ -215,7 +217,7 @@ const ProjectScreen = ({ route }) => {
                   : "checkbox-blank-circle-outline"
               }
               size={24}
-              color={item.isCompleted ? "green" : "grey"}
+              color={item.isCompleted ? "white" : "white"}
             />
           </TouchableOpacity>
           {currentUser?.uid === project?.ownerId && (
@@ -224,7 +226,7 @@ const ProjectScreen = ({ route }) => {
                 <MaterialCommunityIcons
                   name="pencil-outline"
                   size={24}
-                  color="blue"
+                  color="white"
                 />
               </TouchableOpacity>
 
@@ -232,7 +234,7 @@ const ProjectScreen = ({ route }) => {
                 <MaterialCommunityIcons
                   name="delete-outline"
                   size={24}
-                  color="red"
+                  color="white"
                 />
               </TouchableOpacity>
             </>
@@ -313,12 +315,13 @@ const renderBuildings = () => (
                 onChangeText={setTaskName}
               />
               <View style={styles.buttonsContainer}>
-                <Button
-                  title="Select Member"
-                  onPress={() => setPickerVisible(true)}
-                />
+                <TouchableOpacity style={styles.button} onPress={() => setPickerVisible(true)}>
+                  <Text style={styles.buttonText}>Select Member</Text>
+                </TouchableOpacity>
                 <View style={styles.buttonSpacer}></View>
-                <Button title="Add Task" onPress={handleAddTask} />
+                  <TouchableOpacity style={styles.button} onPress={handleAddTask}>
+                    <Text style={styles.buttonText}>Add Task</Text>
+                  </TouchableOpacity>
               </View>
               <Modal
                 visible={isPickerVisible}
@@ -375,11 +378,15 @@ const renderBuildings = () => (
             </View>
           )}
           {/* Task List */}
-          <FlatList
-            data={tasks}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderTaskItem}
-          />
+          <View style={styles.ProjectContainer}>
+            <View style={{ height: FLATLIST_HEIGHT }}>
+              <FlatList
+                data={tasks}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderTaskItem}
+              />
+            </View>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -393,6 +400,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     //backgroundColor: "#fff", // or any color that suits your app theme
+  },
+  ProjectContainer: {
+    backgroundColor: "white",
+    borderRadius: 10,
   },
   headerTitleContainer: {
     flexDirection: "row",
@@ -418,7 +429,7 @@ const styles = StyleSheet.create({
     marginTop: 10, // Adds some space above the button container
   },
   buttonSpacer: {
-    width: 10, // Adjust the width for desired spacing between buttons
+    width: 5, // Adjust the width for desired spacing between buttons
     borderRadius: 10,
   },
   header: {
@@ -431,12 +442,12 @@ const styles = StyleSheet.create({
   formContainer: {
     marginBottom: 20,
     padding: 10,
-    backgroundColor: "#f2f2f2", // light gray background for the form container
+    backgroundColor: "white", // light gray background for the form container
     borderRadius: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: COLORS.blue,
+    borderWidth: 2,
     borderRadius: 5,
     padding: 15,
     marginBottom: 10,
@@ -468,29 +479,31 @@ const styles = StyleSheet.create({
     height: 100, // Height of the building image
     resizeMode: 'contain', // Ensure the entire building is visible
     marginHorizontal: -80,
+
   },
   taskItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 15,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
+    backgroundColor: COLORS.purple,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 10,
     marginBottom: 10,
-    backgroundColor: "#fff",
+    borderRadius: 5,
   },
   taskText: {
     fontSize: 16,
-    flex: 1, // ensures the text takes up as much space as possible
+    flex: 1,
+    color: 'white' // ensures the text takes up as much space as possible
   },
   checkIconImage: {
     width: 24, // Define your size
     height: 24,
   },
   button: {
-    backgroundColor: "#007bff", // a nice blue color for the button
+    backgroundColor: COLORS.purple, // a nice blue color for the button
     padding: 10,
-    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
@@ -498,7 +511,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
   },
   modalView: {
     margin: 20,
@@ -529,7 +542,7 @@ const styles = StyleSheet.create({
     taskCompleted: {
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
-    color: 'grey',
+    color: 'white',
   },
   date: {
     fontSize: 16,
