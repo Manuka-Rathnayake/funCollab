@@ -1,11 +1,12 @@
 import React, { useState,useLayoutEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView,KeyboardAvoidingView, SafeAreaView,Alert } from 'react-native';
 import { auth, database } from "../config/firebase";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import COLORS from '../constants/colors';
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Platform } from 'react-native';
 
 const CreateProjectForm = ({ navigation }) => {
     const [projectName, setProjectName] = useState('');
@@ -38,26 +39,51 @@ const CreateProjectForm = ({ navigation }) => {
   }, [navigation]);
 
 
-    const searchUsersByUsername = async () => {
-        if (!username.trim()) return;
-        try {
-            const usersRef = collection(database, 'users');
-            const q = query(usersRef, where('username', '==', username.trim()));
-            const querySnapshot = await getDocs(q);
+const searchUsersByUsername = async () => {
+    if (!username.trim()) return;
+    try {
+        const usersRef = collection(database, 'users');
+        const q = query(usersRef, where('username', '==', username.trim()));
+        const querySnapshot = await getDocs(q);
 
+        if (querySnapshot.empty) {
+            // No users found, show an alert
+            Alert.alert(
+                "User Not Found",
+                "No user found with that username. Please check the spelling or try another username.",
+                [
+                    { text: "OK" }
+                ]
+            );
+            setSearchResults([]); // Clear any previous search results
+        } else {
             const users = querySnapshot.docs.map(doc => ({
                 uid: doc.id,
                 ...doc.data()
             }));
 
             setSearchResults(users);
-        } catch (error) {
-            console.error("Error searching users by username:", error);
         }
-    };
+    } catch (error) {
+        console.error("Error searching users by username:", error);
+    }
+};
+
 
     const handleSelectUser = (user) => {
-        if (!invitedMembers.some(member => member.uid === user.uid)) {
+        const isUserAlreadyAdded = invitedMembers.some(member => member.uid === user.uid);
+
+        if (isUserAlreadyAdded) {
+            // If the user is found, show an alert
+            Alert.alert(
+            "Member Already Added",
+            "This user has already been added to the project.",
+            [
+                { text: "OK", onPress: () => {setSearchResults([]); setUsername('');} }
+            ]
+            );
+        } else {
+            // If the user is not found, proceed to add them to the invitedMembers array
             const updatedMembers = [...invitedMembers, user];
             setInvitedMembers(updatedMembers);
             setUsername('');
@@ -102,14 +128,26 @@ const CreateProjectForm = ({ navigation }) => {
         const currentDate = selectedDate || eventDate;
         setEventDate(currentDate);
     };
+    const clearForm = () => {
+        setProjectName('');
+        setUsername('');
+        setSearchResults([]);
+        setInvitedMembers([]);
+    };
 
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient
         style={{
             flex: 1
         }}
         colors={[COLORS.purple, COLORS.blue]}
+    >
+        
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
     >
         <ScrollView style={styles.container}>
             <Text style={styles.headerText}>Create your Event</Text>
@@ -133,31 +171,46 @@ const CreateProjectForm = ({ navigation }) => {
                     style={styles.datePicker}
                 />
             )}
+            <View style= {styles.rowcontainer}>
             <TextInput
                 style={styles.input}
                 placeholder="Invite friends by username"
                 value={username}
                 onChangeText={setUsername}
             />
-            <TouchableOpacity style={styles.button} onPress={searchUsersByUsername}>
+            <TouchableOpacity style={styles.buttonSearch} onPress={searchUsersByUsername}>
                 <Text style={styles.buttonText}>Search Users</Text>
             </TouchableOpacity>
+            </View>
             {searchResults.map((item) => (
                 <TouchableOpacity key={item.uid} style={styles.userItem} onPress={() => handleSelectUser(item)}>
                     <Text style={styles.userItemText}>{item.username}</Text>
                 </TouchableOpacity>
             ))}
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-            <Text style={styles.addedmembers}>Added Members:</Text>
-            {invitedMembers.map((member, index) => (
-                <View key={index} style={styles.memberItem}>
-                    <Text style={styles.memberName}>{member.username}</Text>
-                </View>
-            ))}
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                    <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={clearForm}>
+                    <Text style={styles.buttonText}>Clear</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.membersContainer}>
+                <Text style={styles.addedmembers}>Added Members</Text>
+                    {invitedMembers.length === 0 ? (
+                        <Text style={styles.noMembersText}>No members added.</Text>
+                    ) : (
+                        invitedMembers.map((member, index) => (
+                        <View key={index} style={styles.memberItem}>
+                            <Text style={styles.memberName}>{member.username}</Text>
+                        </View>
+                        ))
+                    )}
+            </View>
         </ScrollView>
+        </KeyboardAvoidingView>
         </LinearGradient>
+        </SafeAreaView>
     );
 };
 
@@ -173,16 +226,38 @@ const styles = StyleSheet.create({
     alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
     width: "100%", // Prevents the title from being too wide on large screens
   },
+  membersContainer: {
+    backgroundColor: '#fff', // White background for the container
+    padding: 10,// Inner padding for the container
+    borderRadius: 20, // Rounded corners for the container
+    marginBottom: 20,
+    marginTop: 10, // Margin at the bottom to ensure it's above the tab navigator
+  },
   headerTitleText: {
     marginLeft: 10,
     color: COLORS.purple, // Adjust the color to match your design
     fontSize: 18, // Adjust the size to match your design
     fontWeight: "bold",
   },
+  rowcontainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  buttonSearch: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginBottom: 12, // changed here
+  },
     container: {
         flex: 1,
         padding: 20,
-        top: 20
+        top: 20,
+        paddingBottom: 20,
     },
     headerText: {
         fontSize: 24,
@@ -192,23 +267,25 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: '#fff',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius:30
+        padding: 12,
+        marginBottom: 15,
+        borderRadius:20
     },
     button: {
         backgroundColor:COLORS.white,
-        padding: 10,
-        borderRadius: 30,
+        padding: 12,
+        borderRadius: 20,
         alignItems: 'center',
         marginBottom: 10,
-        marginTop: 10
+        marginTop: 10,
+        flex: 1, // Makes both buttons share available space equally
+        margin: 2,
     },
     userItem: {
         backgroundColor: '#f9f9f9',
-        padding: 10,
+        padding: 15,
         marginBottom: 5,
-        borderRadius: 5,
+        borderRadius: 20,
     },
     userItemText: {
         fontSize: 16,
@@ -216,7 +293,7 @@ const styles = StyleSheet.create({
     datePickerButton: {
         padding: 10,
         backgroundColor: 'white', 
-        borderRadius:30,
+        borderRadius:20,
         marginBottom:10
     },
     buttonText: {
@@ -239,7 +316,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop: 5,
         backgroundColor: '#f0f0f0', 
-        borderRadius: 5,
+        borderRadius: 15,
     },
     memberName: {
         fontSize: 16,
@@ -250,8 +327,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginTop: 10,
         textAlign: 'center',
-        color:'white'
+        color: COLORS.purple
     },
+    noMembersText: {
+    textAlign: 'center', // Center the text
+    color: 'gray', // Set the text color to gray or any color of your choice
+    padding: 20, // Add some padding to ensure the container has height
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around', // This will place some space between your buttons
+    alignItems: 'center',
+  },
 });
 
 export default CreateProjectForm;
