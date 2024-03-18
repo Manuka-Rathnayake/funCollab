@@ -150,7 +150,7 @@ const searchUsersByUsername = async () => {
             style={{ flex: 1 }}
     >
         <ScrollView style={styles.container}>
-            <Text style={styles.headerText}>Create your Event</Text>
+            <Text style={styles.headerText}>Create a Venture</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Event name"
@@ -215,7 +215,7 @@ const searchUsersByUsername = async () => {
 };
 
 const styles = StyleSheet.create({
-      headerTitleContainer: {
+  headerTitleContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     padding: 10,// Inner padding for the container
     borderRadius: 20, // Rounded corners for the container
     marginBottom: 20,
-    marginTop: 10, // Margin at the bottom to ensure it's above the tab navigator
+    marginTop: 2, // Margin at the bottom to ensure it's above the tab navigator
   },
   headerTitleText: {
     marginLeft: 10,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 2,
   },
   buttonSearch: {
     backgroundColor: COLORS.white,
@@ -256,20 +256,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        top: 20,
+        //top: 20,
         paddingBottom: 20,
     },
     headerText: {
-        fontSize: 24,
-        marginBottom: 20,
+        fontSize: 26,
+        marginTop: -8,
+        marginBottom: 10,
         textAlign: 'center',
-        color:'white'
+        color:'white',
+        fontWeight: "bold",
     },
     input: {
         backgroundColor: '#fff',
         padding: 12,
         marginBottom: 15,
-        borderRadius:20
+        borderRadius:20,
+        fontSize: 15,
     },
     button: {
         backgroundColor:COLORS.white,
@@ -283,12 +286,14 @@ const styles = StyleSheet.create({
     },
     userItem: {
         backgroundColor: '#f9f9f9',
-        padding: 15,
-        marginBottom: 5,
+        padding:10,
+        marginTop: -15,
+        marginBottom: 15,
         borderRadius: 20,
     },
     userItemText: {
         fontSize: 16,
+        
     },
     datePickerButton: {
         padding: 10,
@@ -300,6 +305,7 @@ const styles = StyleSheet.create({
         color: COLORS.purple,
         textAlign: 'center',
         fontSize: 16,
+        fontWeight: "bold",
     },
     dateDisplay: {
         fontSize: 16,
@@ -322,12 +328,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333', 
         textAlign: 'center',
+        fontWeight: "bold",
     },
     addedmembers: {
-        fontSize: 16,
-        marginTop: 10,
+        fontSize: 18,
+        marginTop: 2,
+        marginBottom: 2,
         textAlign: 'center',
-        color: COLORS.purple
+        color: COLORS.purple,
+        fontWeight: "bold",
     },
     noMembersText: {
     textAlign: 'center', // Center the text
@@ -338,6 +347,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around', // This will place some space between your buttons
     alignItems: 'center',
+    marginTop: -15, // Add some margin at the top
   },
 });
 

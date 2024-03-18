@@ -151,7 +151,7 @@ const Dashboard = () => {
           Welcome back 👋{"\n"} {userName}!
         </Text>
         <View style={styles.ProjectContainer}>
-        <Text style={styles.header}>Owned Projects</Text>
+        <Text style={styles.header}>My Ventures</Text>
         <View style={{ height: FLATLIST_HEIGHT }}>
         <FlatList
           data={ownedProjects}
@@ -170,13 +170,13 @@ const Dashboard = () => {
             </View>
           )}
           ListEmptyComponent={
-            <Text style={styles.noProjectsText}>No owned projects</Text>
+            <Text style={styles.noProjectsText}>No ventures</Text>
           }
           
         />
         </View>
 
-        <Text style={styles.header}>Member Projects</Text>
+        <Text style={styles.header}>Joint Ventures</Text>
         <View style={{ height: FLATLIST_HEIGHT }}>
         <FlatList
           data={memberProjects}
@@ -190,7 +190,7 @@ const Dashboard = () => {
             </TouchableOpacity>
           )}
           ListEmptyComponent={
-            <Text style={styles.noProjectsText}>No invited projects</Text>
+            <Text style={styles.noProjectsText}>No invited Ventures</Text>
           }
           
         />
