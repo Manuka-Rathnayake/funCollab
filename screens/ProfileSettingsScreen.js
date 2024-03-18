@@ -93,7 +93,7 @@ const ProfileSettingsScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.profileHeader}>
                 <Image source={profileImage} style={styles.profileImage} />
-                <Text style={styles.userName}>{userName}</Text>
+                <Text style={styles.userName}>{userName} 🙌</Text>
             </View>
             <View style={styles.statsContainer}>
                 <View style={styles.statBox}>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     logoutButtonText: {
         color: COLORS.purple,
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 20,
     },
     container: {
         flex: 1,
@@ -194,8 +194,9 @@ const styles = StyleSheet.create({
         color:'white'
     },
     statLabel: {
-        fontSize: 16,
-        color:'white'
+        fontSize: 18,
+        color:'white',
+        fontWeight: "bold",
     },
 });
 

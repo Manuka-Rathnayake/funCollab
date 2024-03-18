@@ -329,7 +329,8 @@ const renderBuildings = () => (
                 transparent={true}
                 onRequestClose={() => setPickerVisible(false)}
               >
-                <View style={styles.modalView}>
+                <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
                   <Picker
                     selectedValue={selectedMember}
                     onValueChange={(itemValue, itemIndex) =>
@@ -345,10 +346,13 @@ const renderBuildings = () => (
                       />
                     ))}
                   </Picker>
-                  <Button
-                    title="Done"
+                  <TouchableOpacity
                     onPress={() => setPickerVisible(false)}
-                  />
+                    style={[styles.button, styles.saveButton]}
+                  >
+                    <Text style={styles.buttonText}>Done</Text>
+                  </TouchableOpacity>
+                </View>
                 </View>
               </Modal>
               <Modal
@@ -357,6 +361,8 @@ const renderBuildings = () => (
                       transparent={true}
                       onRequestClose={() => setEditModalVisible(false)}
                     >
+                    <TouchableWithoutFeedback onPress={() => setEditModalVisible(false)}>
+                    <View style={styles.modalOverlay}>
                       <View style={styles.modalView}>
                         <TextInput
                           style={styles.input}
@@ -364,29 +370,48 @@ const renderBuildings = () => (
                           value={newTaskName}
                           onChangeText={setNewTaskName}
                         />
-                        <Button
-                          title="Save"
-                          onPress={() => {
-                            if (editingTask) {
-                              handleEditTask(editingTask.id, newTaskName);
+                        <View style={styles.buttonContainer}>
+                          <TouchableOpacity
+                            style={[styles.button, styles.saveButton]}
+                            onPress={() => {
+                              if (editingTask) {
+                                handleEditTask(editingTask.id, newTaskName);
+                                setEditModalVisible(false);
+                              }
+                            }}
+                          >
+                            <Text style={styles.buttonText}>Save</Text>
+                          </TouchableOpacity>
+                          
+                          <TouchableOpacity
+                            style={[styles.button, styles.saveButton]}
+                            onPress={() => {
                               setEditModalVisible(false);
-                            }
-                          }}
-                        />
+                            }}
+                          >
+                            <Text style={styles.buttonText}>Cancel</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
+                    </View>
+                    </TouchableWithoutFeedback>
                     </Modal>
             </View>
           )}
-          {/* Task List */}
           <View style={styles.ProjectContainer}>
-            <View style={{ height: FLATLIST_HEIGHT }}>
-              <FlatList
-                data={tasks}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderTaskItem}
-              />
+              {tasks.length === 0 ? (
+                // Display this message if there are no tasks
+                <Text style={styles.noTasksText}>No added tasks.</Text>
+              ) : (
+                <View style={{ height: FLATLIST_HEIGHT }}>
+                  <FlatList
+                    data={tasks}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderTaskItem}
+                  />
+                </View>
+              )}
             </View>
-          </View>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -435,7 +460,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
     color: "#fff", // White text color
   },
@@ -452,6 +477,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     backgroundColor: "#fff",
+    width: "100%",
   },
   picker: {
     borderWidth: 1,
@@ -460,6 +486,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     backgroundColor: "#fff",
+    width: "100%",
   },
   buildingsContainer: {
     height: 200, // Set the height according to your landscape image
@@ -529,6 +556,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     justifyContent: "center",
     alignItems: "center",
+    width: "80%",
   },
   modalButton: {
     marginTop: 20,
@@ -550,7 +578,65 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#fff",
   },
-  
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay
+  },
+  modalContent:{
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width: '80%', 
+  },
+  noTasksText: {
+    textAlign: 'center',
+    color: 'grey',
+    fontSize: 16,
+    padding: 20, // Adds padding to ensure the text is visible and the container looks good even when empty
+  },
+  saveButton: {
+    backgroundColor: COLORS.purple, // Use your app's color scheme
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center', // Center text horizontally
+    justifyContent: 'center', // Center text vertically
+    elevation: 2, // Add elevation for Android (optional)
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    marginHorizontal: 10, // Add some margin to the buttons
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  saveButtonText: {
+    color: 'white', // Text color
+    fontSize: 16, // Adjust based on your design
+    fontWeight: 'bold', // Make the text bold
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around', // This spreads the buttons across the container
+    marginTop: 20, // Adjust as needed
+  },
+  cancelButton: {
+    backgroundColor: '#999', // Typically a less prominent color than the save button
+    // Other specific styles for the cancel button
+  },
 });
 
 export default ProjectScreen;
