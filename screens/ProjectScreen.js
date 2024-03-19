@@ -36,13 +36,13 @@ import { useNavigation } from '@react-navigation/native';
 
 const buildingBW = require("../assets/building-bw.png");
 const buildingColor = require("../assets/building-color.png");
-const cityLandscape = require("../assets/landscape.jpg"); // Your local path to the image
+const cityLandscape = require("../assets/landscape.jpg"); 
 
 const ProjectScreen = ({ route }) => {
   const { projectId } = route.params;
   const [project, setProject] = useState(null);
   const [taskName, setTaskName] = useState("");
-  const [selectedMember, setSelectedMember] = useState("");
+  const [selectedMember, setSelectedMember] = useState("none");
   const [members, setMembers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [isPickerVisible, setPickerVisible] = useState(false);
@@ -68,12 +68,12 @@ const ProjectScreen = ({ route }) => {
         </View>
       ),
       headerStyle: {
-        backgroundColor: COLORS.purple, // Adjust the color to your header's background
+        backgroundColor: COLORS.purple, 
       },
       headerTitleAlign: "center",
       headerBackVisible: false,
       headerTitleContainerStyle: {
-        left: 0, // Adjust these values to bring the title closer to the center if needed
+        left: 0, 
         right: 0,
       },
       
@@ -105,7 +105,7 @@ const ProjectScreen = ({ route }) => {
     });
 
     return () => unsubscribeProject();
-  }, [projectId]); // Depends on projectId to re-run when it changes
+  }, [projectId]); 
 
   useEffect(() => {
     if (!project || !project.members) return;
@@ -123,10 +123,10 @@ const ProjectScreen = ({ route }) => {
     });
 
     return () => unsubscribeMembers();
-  }, [project]); // Depends on project to re-run when it changes
+  }, [project]); 
 
   const handleAddTask = async () => {
-    if (!taskName.trim() || !selectedMember) {
+    if (!taskName.trim() || selectedMember === "none") {
       Alert.alert("Error", "Please enter a task name and select a member.");
       return;
     }
@@ -145,13 +145,13 @@ const ProjectScreen = ({ route }) => {
 
     setTaskName("");
     setSelectedMember("");
-    Keyboard.dismiss(); // Dismiss the keyboard after task is added
+    Keyboard.dismiss(); 
   };
   const handleCompleteTask = async (taskId) => {
-    // Find the task that matches the taskId
+    
     const task = tasks.find((task) => task.id === taskId);
 
-    // Check if the current user is the assigned member for the task
+    
     if (auth.currentUser.uid === task.assignedTo) {
       const projectRef = doc(database, "projects", projectId);
       const updatedTasks = tasks.map((task) =>
@@ -204,7 +204,7 @@ const ProjectScreen = ({ route }) => {
           <Text
             style={[
               styles.taskText,
-              item.isCompleted && styles.taskCompleted, // Add strikethrough if task is completed
+              item.isCompleted && styles.taskCompleted, 
             ]}
           >
             {displayName} - {item.taskName}
@@ -338,6 +338,7 @@ const renderBuildings = () => (
                     }
                     style={styles.picker}
                   >
+                    <Picker.Item label="Select a member" value="none" />
                     {members.map((member) => (
                       <Picker.Item
                         key={member.uid}
@@ -400,7 +401,6 @@ const renderBuildings = () => (
           )}
           <View style={styles.ProjectContainer}>
               {tasks.length === 0 ? (
-                // Display this message if there are no tasks
                 <Text style={styles.noTasksText}>No added tasks.</Text>
               ) : (
                 <View style={{ height: FLATLIST_HEIGHT }}>
@@ -424,7 +424,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    //backgroundColor: "#fff", // or any color that suits your app theme
   },
   ProjectContainer: {
     backgroundColor: "white",
@@ -435,26 +434,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    backgroundColor: "white", // Adjust if you want a different background for the title
+    backgroundColor: "white", 
     borderRadius: 30,
-    marginHorizontal: 10, // Keeps the header title container within the screen bounds
-    alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
-    width: "90%", // Prevents the title from being too wide on large screens
+    marginHorizontal: 10, 
+    alignSelf: "stretch", 
+    width: "90%", 
   },
   headerTitleText: {
     marginLeft: 10,
-    color: COLORS.purple, // Adjust the color to match your design
-    fontSize: 18, // Adjust the size to match your design
+    color: COLORS.purple, 
+    fontSize: 18, 
     fontWeight: "bold",
   },
   buttonsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between", // This spreads out the buttons
+    justifyContent: "space-between", 
     alignItems: "center",
-    marginTop: 10, // Adds some space above the button container
+    marginTop: 10, 
   },
   buttonSpacer: {
-    width: 5, // Adjust the width for desired spacing between buttons
+    width: 5, 
     borderRadius: 10,
   },
   header: {
@@ -462,12 +461,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
-    color: "#fff", // White text color
+    color: "#fff", 
   },
   formContainer: {
     marginBottom: 20,
     padding: 10,
-    backgroundColor: "white", // light gray background for the form container
+    backgroundColor: "white", 
     borderRadius: 10,
   },
   input: {
@@ -489,22 +488,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buildingsContainer: {
-    height: 200, // Set the height according to your landscape image
-    width: '100%', // The container should span the width of the screen
+    height: 200, 
+    width: '100%', 
     backgroundColor: 'transparent',
   },
   cityBackground: {
-    flex: 1, // The background should fill the container
-    flexDirection: 'row', // Lay out children in a row
-    justifyContent: 'space-evenly', // Space out the buildings evenly
-    alignItems: 'center', // Align buildings vertically
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'space-evenly', 
+    alignItems: 'center', 
     marginBottom:10,
     borderRadius: 10,
   },
   buildingImage: {
-    width: 50, // Width of the building image
-    height: 100, // Height of the building image
-    resizeMode: 'contain', // Ensure the entire building is visible
+    width: 50, 
+    height: 100, 
+    resizeMode: 'contain', 
     marginHorizontal: -80,
 
   },
@@ -522,7 +521,7 @@ const styles = StyleSheet.create({
   taskText: {
     fontSize: 16,
     flex: 1,
-    color: 'white' // ensures the text takes up as much space as possible
+    color: 'white' 
   },
   checkIconImage: {
     width: 24, // Define your size
@@ -562,10 +561,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   backgroundImage: {
-    position: "absolute", // Allows content to be displayed over the background
-    width: "100%", // Sets the width to the full width of the container
-    height: "100%", // Sets the height to the full height of the container
-    resizeMode: "cover", // Covers the entire background without stretching the image
+    position: "absolute", 
+    width: "100%", 
+    height: "100%", 
+    resizeMode: "cover", 
   },
     taskCompleted: {
     textDecorationLine: 'line-through',
@@ -604,16 +603,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'grey',
     fontSize: 16,
-    padding: 20, // Adds padding to ensure the text is visible and the container looks good even when empty
+    padding: 20, 
   },
   saveButton: {
-    backgroundColor: COLORS.purple, // Use your app's color scheme
+    backgroundColor: COLORS.purple, 
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    alignItems: 'center', // Center text horizontally
+    alignItems: 'center', 
     justifyContent: 'center', // Center text vertically
-    elevation: 2, // Add elevation for Android (optional)
+    elevation: 2, 
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -624,18 +623,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
   },
   saveButtonText: {
-    color: 'white', // Text color
-    fontSize: 16, // Adjust based on your design
+    color: 'white', 
+    fontSize: 16, 
     fontWeight: 'bold', // Make the text bold
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around', // This spreads the buttons across the container
+    justifyContent: 'space-around', 
     marginTop: 20, // Adjust as needed
   },
   cancelButton: {
-    backgroundColor: '#999', // Typically a less prominent color than the save button
-    // Other specific styles for the cancel button
+    backgroundColor: '#999', 
   },
 });
 

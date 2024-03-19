@@ -26,13 +26,13 @@ const CreateProjectForm = ({ navigation }) => {
         </View>
       ),
       headerStyle: {
-        backgroundColor: COLORS.purple, // Adjust the color to your header's background
-        elevation: 0, // Removes shadow on Android
-        shadowOpacity: 0, // Removes shadow on iOS
+        backgroundColor: COLORS.purple, 
+        elevation: 0, 
+        shadowOpacity: 0, 
       },
       headerTitleAlign: "center",
       headerTitleContainerStyle: {
-        left: 0, // Adjust these values to bring the title closer to the center if needed
+        left: 0, 
         right: 0,
       },
     });
@@ -47,7 +47,7 @@ const searchUsersByUsername = async () => {
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            // No users found, show an alert
+            
             Alert.alert(
                 "User Not Found",
                 "No user found with that username. Please check the spelling or try another username.",
@@ -55,7 +55,7 @@ const searchUsersByUsername = async () => {
                     { text: "OK" }
                 ]
             );
-            setSearchResults([]); // Clear any previous search results
+            setSearchResults([]); 
         } else {
             const users = querySnapshot.docs.map(doc => ({
                 uid: doc.id,
@@ -74,7 +74,7 @@ const searchUsersByUsername = async () => {
         const isUserAlreadyAdded = invitedMembers.some(member => member.uid === user.uid);
 
         if (isUserAlreadyAdded) {
-            // If the user is found, show an alert
+            
             Alert.alert(
             "Member Already Added",
             "This user has already been added to the project.",
@@ -83,7 +83,7 @@ const searchUsersByUsername = async () => {
             ]
             );
         } else {
-            // If the user is not found, proceed to add them to the invitedMembers array
+            
             const updatedMembers = [...invitedMembers, user];
             setInvitedMembers(updatedMembers);
             setUsername('');
@@ -220,23 +220,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    backgroundColor: "white", // Adjust if you want a different background for the title
+    backgroundColor: "white", 
     borderRadius: 30,
-    marginHorizontal: 10, // Keeps the header title container within the screen bounds
-    alignSelf: "stretch", // Make sure this is set to 'stretch' or just remove it
-    width: "100%", // Prevents the title from being too wide on large screens
+    marginHorizontal: 10, 
+    alignSelf: "stretch", 
+    width: "100%", 
   },
   membersContainer: {
-    backgroundColor: '#fff', // White background for the container
-    padding: 10,// Inner padding for the container
-    borderRadius: 20, // Rounded corners for the container
+    backgroundColor: '#fff', 
+    padding: 10,
+    borderRadius: 20, 
     marginBottom: 20,
-    marginTop: 2, // Margin at the bottom to ensure it's above the tab navigator
+    marginTop: 2, 
   },
   headerTitleText: {
     marginLeft: 10,
-    color: COLORS.purple, // Adjust the color to match your design
-    fontSize: 18, // Adjust the size to match your design
+    color: COLORS.purple, 
+    fontSize: 18, 
     fontWeight: "bold",
   },
   rowcontainer: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 12, // changed here
+    marginBottom: 12, 
   },
     container: {
         flex: 1,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
         marginTop: 10,
-        flex: 1, // Makes both buttons share available space equally
+        flex: 1, 
         margin: 2,
     },
     userItem: {
@@ -339,15 +339,15 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     noMembersText: {
-    textAlign: 'center', // Center the text
-    color: 'gray', // Set the text color to gray or any color of your choice
-    padding: 20, // Add some padding to ensure the container has height
+    textAlign: 'center', 
+    color: 'gray', 
+    padding: 20, 
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around', // This will place some space between your buttons
+    justifyContent: 'space-around', 
     alignItems: 'center',
-    marginTop: -15, // Add some margin at the top
+    marginTop: -15, 
   },
 });
 
