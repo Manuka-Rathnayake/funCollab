@@ -91,34 +91,49 @@ const searchUsersByUsername = async () => {
         }
     };
 
-    const handleSubmit = async () => {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            console.error("No user is currently logged in.");
-            return;
-        }
+const handleSubmit = async () => {
+    
+    if (!projectName.trim()) {
+        Alert.alert("Missing Information", "Please enter an event name.");
+        return;
+    }
 
-        try {
-            const projectRef = doc(database, 'projects', `${currentUser.uid}_${new Date().getTime()}`);
-            const memberUids = [...new Set([...invitedMembers.map(user => user.uid), currentUser.uid])];
+    if (!eventDate || eventDate < new Date()) {
+        Alert.alert("Invalid Date", "Please select a future date for the event.");
+        return;
+    }
 
-            await setDoc(projectRef, {
-                projectName,
-                eventDate: new Date(eventDate),
-                ownerId: currentUser.uid,
-                members: memberUids,
-            });
-            setProjectName('');
-            setEventDate(new Date());
-            setUsername('');
-            setSearchResults([]);
-            setInvitedMembers([]);
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        console.error("No user is currently logged in.");
+        return;
+    }
 
-            navigation.navigate('Dashboard');
-        } catch (error) {
-            console.error("Error creating project: ", error);
-        }
-    };
+    try {
+        const projectRef = doc(database, 'projects', `${currentUser.uid}_${new Date().getTime()}`);
+        const memberUids = [...new Set([...invitedMembers.map(user => user.uid), currentUser.uid])];
+
+        await setDoc(projectRef, {
+            projectName,
+            eventDate: eventDate,
+            ownerId: currentUser.uid,
+            members: memberUids,
+        });
+        Alert.alert("Success", "The event has been successfully created.");
+        setProjectName('');
+        setEventDate(new Date());
+        setUsername('');
+        setSearchResults([]);
+        setInvitedMembers([]);
+
+        navigation.navigate('Dashboard');
+    } catch (error) {
+        console.error("Error creating project: ", error);
+        Alert.alert("Error", "Failed to create the event. Please try again later.");
+    }
+};
+
+
     const showDatepicker = () => {
         setShowDatePicker((current) => !current);
     };
