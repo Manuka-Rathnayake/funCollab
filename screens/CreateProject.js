@@ -284,10 +284,14 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: '#fff',
-        padding: 12,
+        paddingTop:10,
+        paddingBottom:10,
+        paddingLeft:5,
+        paddingRight:5,
         marginBottom: 15,
         borderRadius:20,
         fontSize: 15,
+        marginRight:10
     },
     button: {
         backgroundColor:COLORS.white,
