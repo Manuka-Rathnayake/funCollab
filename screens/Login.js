@@ -19,64 +19,76 @@ const Login = ({ navigation }) => {
     const [emailOrUsername, setEmailOrUsername] = useState("");
     const [resetEmail, setResetEmail] = useState('');
 
+    const isValidEmail = (email) => {
+        return /\S+@\S+\.\S+/.test(email);
+    };
+
 
     const handlePasswordReset = async (email) => {
         if (!email) {
-        Alert.alert('Missing Email', 'Please enter your email address to reset your password.');
-        return; 
-    }
+            Alert.alert('Missing Email', 'Please enter your email address to reset your password.');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            Alert.alert('Invalid Email', 'Please enter a valid email address.');
+            return;
+        }
+
         try {
             await sendPasswordResetEmail(auth, email);
-            Alert.alert("Password Reset", "Please check your email to reset your password.");
+            Alert.alert('Check your email', 'A link to reset your password has been sent to your email address.');
         } catch (error) {
-            Alert.alert("Reset Error", error.message);
+            console.error(error);
+            Alert.alert('Error', 'Failed to send password reset email. Please try again later.');
         }
     };
 
+const onHandleLogin = async () => {
+    if (!emailOrUsername || !password) {
+        Alert.alert("Login Error", "Please enter both an email/username and a password.");
+        return;
+    }
 
-    const onHandleLogin = async () => {
-        
-        if (emailOrUsername !== "" && password !== "") {
-            const isEmail = emailOrUsername.includes('@');
+    const isEmail = emailOrUsername.includes('@');
 
-            if (isEmail) {
-                signInWithEmailAndPassword(auth, emailOrUsername, password)
-                    .then(() => {
-                        console.log("Login success");
-                        navigation.navigate('Dashboard');
-                    })
-                    .catch((err) => Alert.alert("Login error", err.message));
+    try {
+        if (isEmail) {
+            await signInWithEmailAndPassword(auth, emailOrUsername, password);
+            console.log("Login success");
+            navigation.navigate('Dashboard');
+        } else {
+            const usersRef = collection(database, "users");
+            const q = query(usersRef, where("username", "==", emailOrUsername));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const userEmail = userDoc.data().email;
+                await signInWithEmailAndPassword(auth, userEmail, password);
+                console.log("Login success");
+                navigation.navigate('Dashboard');
             } else {
-                const usersRef = collection(database, "users");
-                const q = query(usersRef, where("username", "==", emailOrUsername));
-
-                getDocs(q).then((querySnapshot) => {
-                    if (!querySnapshot.empty) {
-                        const userDoc = querySnapshot.docs[0];
-                        const userEmail = userDoc.data().email;
-
-                        signInWithEmailAndPassword(auth, userEmail, password)
-                            .then(() => {
-                                console.log("Login success");
-                                navigation.navigate('Dashboard');
-                            })
-                            .catch((err) => {
-                            if (err.code === "auth/invalid-credential") {
-                                Alert.alert("Login Error", "The password is incorrect. Please try again.");
-                            } else {
-                                Alert.alert("Login Error", err.message);
-                            }
-                            });
-                    } else {
-                        Alert.alert("Login error", "No user found with this username.");
-                    }
-                }).catch((err) => {
-                    //Alert.alert("Login error", err.message);
-                    Alert.alert("Login Error", "Please enter both an email/username and a password.");
-                });
+                Alert.alert("Login Error", "No user found with this username.");
             }
         }
-    };
+    } catch (error) {
+        switch (error.code) {
+            case 'auth/user-not-found':
+            case 'auth/invalid-credential':
+                Alert.alert("Login Error", "The email or password is incorrect. Please try again.");
+                break;
+            case 'auth/invalid-email':
+                Alert.alert("Login Error", "The email address is not valid.");
+                break;
+            default:
+                Alert.alert("Login Error", "An unexpected error occurred. Please try again later.");
+                console.log(error);
+                break;
+        }
+    }
+};
+
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
