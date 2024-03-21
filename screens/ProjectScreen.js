@@ -424,6 +424,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    paddingTop:0
   },
   ProjectContainer: {
     backgroundColor: "white",
