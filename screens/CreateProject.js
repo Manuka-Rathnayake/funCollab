@@ -167,7 +167,7 @@ const handleSubmit = async () => {
         <ScrollView style={styles.container}>
             <Text style={styles.headerText}>Create a Venture</Text>
             <TextInput
-                style={styles.input}
+                style={styles.input1}
                 placeholder="Event name"
                 value={projectName}
                 onChangeText={setProjectName}
@@ -188,7 +188,7 @@ const handleSubmit = async () => {
             )}
             <View style= {styles.rowcontainer}>
             <TextInput
-                style={styles.input}
+                style={styles.input2}
                 placeholder="Invite friends by username"
                 value={username}
                 onChangeText={setUsername}
@@ -283,6 +283,24 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     input: {
+        backgroundColor: '#fff',
+        paddingTop:10,
+        paddingBottom:10,
+        paddingLeft:5,
+        paddingRight:5,
+        marginBottom: 15,
+        borderRadius:20,
+        fontSize: 15,
+        marginRight:10
+    },
+    input1: {
+        backgroundColor: '#fff',
+        padding:10,
+        marginBottom: 15,
+        borderRadius:20,
+        fontSize: 15,
+    },
+    input2: {
         backgroundColor: '#fff',
         paddingTop:10,
         paddingBottom:10,
